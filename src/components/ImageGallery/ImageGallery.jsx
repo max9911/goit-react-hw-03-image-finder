@@ -14,6 +14,7 @@ class ImageGallery extends Component {
     modalPic: '',
     modalW: false,
     bntShow: true,
+    totalHits: null,
   };
 
   componentDidUpdate(prevP, prevS) {
@@ -31,6 +32,7 @@ class ImageGallery extends Component {
       this.setState({ loading: true, bntShow: false });
       const resp = await getPics(this.props.word, this.state.page);
       const obj = resp.data.hits;
+      this.setState({ totalHits: resp.data.totalHits });
       this.setState(prev => ({ data: [...prev.data, ...obj] }));
     } catch (err) {
       console.log(err);
@@ -91,7 +93,9 @@ class ImageGallery extends Component {
               wrapperClass=""
             />
           )}
-          {data.length > 0 && this.state.bntShow ? (
+          {data.length > 0 &&
+          this.state.bntShow &&
+          this.state.totalHits / this.state.page / 12 > 1 ? (
             <BtnMore click={this.btnClick} />
           ) : (
             ''
